@@ -1,0 +1,58 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: distributed-voting-system
+  
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: voting_system
+      auto-index-creation: true
+  
+  redis:
+    host: localhost
+    port: 6379
+    timeout: 2000ms
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+
+# Distributed System Configuration
+distributed:
+  zookeeper:
+    connect-string: localhost:2181
+    session-timeout: 60000
+    connection-timeout: 15000
+    base-sleep-time: 1000
+    max-retries: 3
+  
+  # Replication Configuration
+  replication:
+    replica-count: 3
+    sync-timeout: 5000
+  
+  # Locking Configuration
+  locking:
+    lock-timeout: 10000
+    retry-interval: 100
+  
+  # Scheduling Configuration
+  scheduling:
+    thread-pool-size: 10
+    queue-capacity: 100
+    max-wait-time: 5000
+
+# Logging Configuration
+logging:
+  level:
+    p.projectone: DEBUG
+    org.springframework.data.mongodb: DEBUG
+    org.springframework.data.redis: DEBUG
+    org.apache.curator: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n" 
