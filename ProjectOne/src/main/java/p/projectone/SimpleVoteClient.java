@@ -55,51 +55,51 @@ public class SimpleVoteClient extends JFrame {
     }
 
     public SimpleVoteClient() {
-        setTitle("分布式投票系统客户端 - 连接服务器版");
+        setTitle("Distributed Voting System Client - Server Connected");
         setSize(500, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // 创建输入面板
+        // Create input panel
         JPanel inputPanel = new JPanel(new GridLayout(4, 2, 5, 5));
-        inputPanel.setBorder(BorderFactory.createTitledBorder("投票信息"));
+        inputPanel.setBorder(BorderFactory.createTitledBorder("Voting Information"));
         
-        inputPanel.add(new JLabel("用户ID:"));
+        inputPanel.add(new JLabel("User ID:"));
         userIdField = new JTextField();
         inputPanel.add(userIdField);
         
-        inputPanel.add(new JLabel("候选人:"));
+        inputPanel.add(new JLabel("Candidate:"));
         candidateBox = new JComboBox<>(candidates);
         inputPanel.add(candidateBox);
         
-        voteButton = new JButton("投票");
+        voteButton = new JButton("Vote");
         inputPanel.add(voteButton);
         
-        refreshButton = new JButton("刷新结果");
+        refreshButton = new JButton("Refresh Results");
         inputPanel.add(refreshButton);
 
         add(inputPanel, BorderLayout.NORTH);
 
-        // 创建结果显示面板
+        // Create result display panel
         JPanel resultPanel = new JPanel(new BorderLayout());
         resultArea = new JTextArea();
         resultArea.setEditable(false);
         resultArea.setLineWrap(true);
-        resultArea.setBorder(BorderFactory.createTitledBorder("投票结果"));
+        resultArea.setBorder(BorderFactory.createTitledBorder("Voting Results"));
         resultPanel.add(new JScrollPane(resultArea), BorderLayout.CENTER);
         
-        // 创建日志面板
+        // Create log panel
         logArea = new JTextArea();
         logArea.setEditable(false);
         logArea.setLineWrap(true);
-        logArea.setBorder(BorderFactory.createTitledBorder("系统日志"));
+        logArea.setBorder(BorderFactory.createTitledBorder("System Log"));
         logArea.setPreferredSize(new Dimension(400, 150));
         resultPanel.add(new JScrollPane(logArea), BorderLayout.SOUTH);
 
         add(resultPanel, BorderLayout.CENTER);
 
-        // 投票按钮事件
+        // Vote button event
         voteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -109,40 +109,40 @@ public class SimpleVoteClient extends JFrame {
                 String candidateName = candidates[idx];
                 
                 if (userId.isEmpty()) {
-                    JOptionPane.showMessageDialog(SimpleVoteClient.this, "请输入用户ID！");
+                    JOptionPane.showMessageDialog(SimpleVoteClient.this, "Please enter User ID!");
                     return;
                 }
                 
-                logMessage("开始投票 - 用户: " + userId + " 投给 " + candidateName);
+                logMessage("Voting started - User: " + userId + " voted for " + candidateName);
                 
-                // 发送投票请求到服务器
+                // Send vote request to server
                 boolean success = sendVoteToServer(userId, candidateId, candidateName);
                 
                 if (success) {
-                    logMessage("投票成功！");
-                    JOptionPane.showMessageDialog(SimpleVoteClient.this, "投票成功！");
+                    logMessage("Vote successful!");
+                    JOptionPane.showMessageDialog(SimpleVoteClient.this, "Vote successful!");
                     refreshResultsFromServer();
                 } else {
-                    logMessage("投票失败！");
-                    JOptionPane.showMessageDialog(SimpleVoteClient.this, "投票失败或已投票！");
+                    logMessage("Vote failed!");
+                    JOptionPane.showMessageDialog(SimpleVoteClient.this, "Vote failed or already voted!");
                 }
             }
         });
 
-        // 刷新按钮事件
+        // Refresh button event
         refreshButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 refreshResultsFromServer();
-                logMessage("刷新投票结果");
+                logMessage("Refreshed voting results");
             }
         });
 
-        // 启动时显示初始结果
+        // Show initial results on startup
         refreshResultsFromServer();
-        logMessage("分布式投票系统客户端已启动");
-        logMessage("连接到服务器: " + getServerUrl());
-        logMessage("演示分布式算法：锁定、同步、调度、复制");
+        logMessage("Distributed Voting System Client started");
+        logMessage("Connected to server: " + getServerUrl());
+        logMessage("Demonstrating distributed algorithms: Locking, Synchronization, Scheduling, Replication");
     }
 
     // 发送投票请求到服务器
@@ -158,14 +158,14 @@ public class SimpleVoteClient extends JFrame {
             String json = String.format("{\"userId\":\"%s\",\"candidateId\":\"%s\",\"candidateName\":\"%s\"}",
                     userId, candidateId, candidateName);
             
-            logMessage("发送请求到节点: " + serverUrl + " 内容: " + json);
+            logMessage("Sending request to node: " + serverUrl + " Content: " + json);
             
             try (OutputStream os = conn.getOutputStream()) {
                 os.write(json.getBytes());
             }
             
             int responseCode = conn.getResponseCode();
-            logMessage("服务器响应码: " + responseCode);
+            logMessage("Server response code: " + responseCode);
             
             if (responseCode == 200) {
                 return true;
@@ -177,13 +177,13 @@ public class SimpleVoteClient extends JFrame {
                     while ((line = br.readLine()) != null) {
                         response.append(line);
                     }
-                    logMessage("错误信息: " + response.toString());
+                    logMessage("Error message: " + response.toString());
                 }
                 // 故障转移：尝试下一个节点
                 for (int i = 0; i < SERVER_NODES.length - 1; i++) {
                     String nextUrl = getServerUrl();
                     if (!nextUrl.equals(serverUrl)) {
-                        logMessage("尝试切换到下一个节点: " + nextUrl);
+                        logMessage("Trying to switch to next node: " + nextUrl);
                         try {
                             URL retryUrl = new URL(nextUrl + "/api/vote");
                             HttpURLConnection retryConn = (HttpURLConnection) retryUrl.openConnection();
@@ -195,7 +195,7 @@ public class SimpleVoteClient extends JFrame {
                             }
                             int retryCode = retryConn.getResponseCode();
                             if (retryCode == 200) {
-                                logMessage("切换节点投票成功: " + nextUrl);
+                                logMessage("Vote successful after switching node: " + nextUrl);
                                 return true;
                             }
                         } catch (Exception ignore) {}
@@ -205,7 +205,7 @@ public class SimpleVoteClient extends JFrame {
             }
             
         } catch (Exception ex) {
-            logMessage("连接服务器失败: " + ex.getMessage());
+            logMessage("Failed to connect to server: " + ex.getMessage());
             return false;
         }
     }
@@ -230,18 +230,18 @@ public class SimpleVoteClient extends JFrame {
                 
                 // 解析JSON结果
                 String jsonResponse = sb.toString();
-                logMessage("获取结果: " + jsonResponse);
+                logMessage("Fetched results: " + jsonResponse);
                 
                 // 简单解析JSON（实际项目中应该使用JSON库）
                 Map<String, Integer> results = parseJsonResults(jsonResponse);
                 
                 StringBuilder resultText = new StringBuilder();
-                resultText.append("=== 投票结果 ===\n");
+                resultText.append("=== Voting Results ===\n");
                 for (int i = 0; i < candidates.length; i++) {
                     String name = candidates[i];
                     String cid = candidateIds[i];
                     int count = results.getOrDefault(cid, 0);
-                    resultText.append(name).append(": ").append(count).append(" 票\n");
+                    resultText.append(name).append(": ").append(count).append(" votes\n");
                 }
                 
                 // 获取统计信息
@@ -250,13 +250,13 @@ public class SimpleVoteClient extends JFrame {
                 resultArea.setText(resultText.toString());
                 
             } else {
-                resultArea.setText("无法获取投票结果 - 响应码: " + responseCode);
-                logMessage("获取结果失败 - 响应码: " + responseCode);
+                resultArea.setText("Failed to get voting results - Response code: " + responseCode);
+                logMessage("Failed to fetch results - Response code: " + responseCode);
             }
             
         } catch (Exception ex) {
-            resultArea.setText("无法连接到服务器\n" + ex.getMessage());
-            logMessage("连接服务器失败: " + ex.getMessage());
+            resultArea.setText("Failed to connect to server\n" + ex.getMessage());
+            logMessage("Failed to connect to server: " + ex.getMessage());
         }
     }
     
@@ -278,15 +278,15 @@ public class SimpleVoteClient extends JFrame {
                 
                 Map<String, Integer> stats = parseJsonResults(sb.toString());
                 
-                resultText.append("\n=== 服务器统计 ===\n");
-                resultText.append("总请求数: ").append(stats.getOrDefault("totalRequests", 0)).append("\n");
-                resultText.append("成功投票: ").append(stats.getOrDefault("successfulVotes", 0)).append("\n");
-                resultText.append("失败投票: ").append(stats.getOrDefault("failedVotes", 0)).append("\n");
-                resultText.append("总投票人数: ").append(stats.getOrDefault("totalVoters", 0)).append("\n");
-                resultText.append("活跃锁数: ").append(stats.getOrDefault("activeLocks", 0)).append("\n");
+                resultText.append("\n=== Server Statistics ===\n");
+                resultText.append("Total Requests: ").append(stats.getOrDefault("totalRequests", 0)).append("\n");
+                resultText.append("Successful Votes: ").append(stats.getOrDefault("successfulVotes", 0)).append("\n");
+                resultText.append("Failed Votes: ").append(stats.getOrDefault("failedVotes", 0)).append("\n");
+                resultText.append("Total Voters: ").append(stats.getOrDefault("totalVoters", 0)).append("\n");
+                resultText.append("Active Locks: ").append(stats.getOrDefault("activeLocks", 0)).append("\n");
             }
         } catch (Exception ex) {
-            logMessage("获取统计信息失败: " + ex.getMessage());
+            logMessage("Failed to fetch statistics: " + ex.getMessage());
         }
     }
     
@@ -306,7 +306,7 @@ public class SimpleVoteClient extends JFrame {
                 }
             }
         } catch (Exception ex) {
-            logMessage("解析JSON失败: " + ex.getMessage());
+            logMessage("Failed to parse JSON: " + ex.getMessage());
         }
         return results;
     }

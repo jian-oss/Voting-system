@@ -26,23 +26,23 @@ public class VoteClientGUI extends JFrame {
     private String[] candidateIds = {"1", "2", "3"};
 
     public VoteClientGUI() {
-        setTitle("分布式投票系统客户端");
+        setTitle("Distributed Voting System Client");
         setSize(400, 350);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
         JPanel inputPanel = new JPanel(new GridLayout(3, 2, 5, 5));
-        inputPanel.setBorder(BorderFactory.createTitledBorder("投票信息"));
-        inputPanel.add(new JLabel("用户ID:"));
+        inputPanel.setBorder(BorderFactory.createTitledBorder("Voting Information"));
+        inputPanel.add(new JLabel("User ID:"));
         userIdField = new JTextField();
         inputPanel.add(userIdField);
-        inputPanel.add(new JLabel("候选人:"));
+        inputPanel.add(new JLabel("Candidate:"));
         candidateBox = new JComboBox<>(candidates);
         inputPanel.add(candidateBox);
-        voteButton = new JButton("投票");
+        voteButton = new JButton("Vote");
         inputPanel.add(voteButton);
-        refreshButton = new JButton("刷新结果");
+        refreshButton = new JButton("Refresh Results");
         inputPanel.add(refreshButton);
 
         add(inputPanel, BorderLayout.NORTH);
@@ -50,10 +50,10 @@ public class VoteClientGUI extends JFrame {
         resultArea = new JTextArea();
         resultArea.setEditable(false);
         resultArea.setLineWrap(true);
-        resultArea.setBorder(BorderFactory.createTitledBorder("投票结果"));
+        resultArea.setBorder(BorderFactory.createTitledBorder("Voting Results"));
         add(new JScrollPane(resultArea), BorderLayout.CENTER);
 
-        // 投票按钮事件
+        // Vote button event
         voteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -62,20 +62,20 @@ public class VoteClientGUI extends JFrame {
                 String candidateId = candidateIds[idx];
                 String candidateName = candidates[idx];
                 if (userId.isEmpty()) {
-                    JOptionPane.showMessageDialog(VoteClientGUI.this, "请输入用户ID！");
+                    JOptionPane.showMessageDialog(VoteClientGUI.this, "Please enter User ID!");
                     return;
                 }
                 boolean success = sendVote(userId, candidateId, candidateName);
                 if (success) {
-                    JOptionPane.showMessageDialog(VoteClientGUI.this, "投票成功！");
+                    JOptionPane.showMessageDialog(VoteClientGUI.this, "Vote successful!");
                     refreshResults();
                 } else {
-                    JOptionPane.showMessageDialog(VoteClientGUI.this, "投票失败或已投票！");
+                    JOptionPane.showMessageDialog(VoteClientGUI.this, "Vote failed or already voted!");
                 }
             }
         });
 
-        // 刷新按钮事件
+        // Refresh button event
         refreshButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -83,7 +83,7 @@ public class VoteClientGUI extends JFrame {
             }
         });
 
-        // 启动时自动刷新一次
+        // Auto refresh on startup
         refreshResults();
     }
 
