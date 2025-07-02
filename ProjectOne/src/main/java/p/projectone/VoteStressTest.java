@@ -10,8 +10,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class VoteStressTest {
     // 支持多个服务器节点
     private static final String[] SERVER_NODES = {
-        "http://localhost:8080",
-        "http://localhost:8081"
+        "http://10.72.83.45:8080",
+        "http://10.72.83.45:8081"
         // 可添加更多节点
     };
     private static final String[] CANDIDATES = {"1", "2", "3"};

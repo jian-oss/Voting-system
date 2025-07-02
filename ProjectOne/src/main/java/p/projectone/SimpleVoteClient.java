@@ -34,8 +34,8 @@ public class SimpleVoteClient extends JFrame {
     
     // 支持多个服务器节点
     private static final String[] SERVER_NODES = {
-        "http://localhost:8080",
-        "http://localhost:8081",
+        "http://10.72.83.45:8080",
+        "http://10.72.83.45:8081",
         // 可以添加更多节点，如 "http://192.168.1.101:8080"
     };
     // 负载均衡模式："roundrobin" 或 "random"

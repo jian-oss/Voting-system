@@ -90,7 +90,7 @@ public class VoteClientGUI extends JFrame {
     // 发送投票请求
     private boolean sendVote(String userId, String candidateId, String candidateName) {
         try {
-            URL url = new URL("http://localhost:8080/api/vote");
+            URL url = new URL("http://10.72.83.45:8080/api/vote");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
@@ -113,7 +113,7 @@ public class VoteClientGUI extends JFrame {
     // 查询投票结果
     private void refreshResults() {
         try {
-            URL url = new URL("http://localhost:8080/api/vote/results");
+            URL url = new URL("http://10.72.83.45:8080/api/vote/results");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");

@@ -29,7 +29,7 @@ public class DistributedVotingSystemApplication {
         SpringApplication.run(DistributedVotingSystemApplication.class, args);
         
         System.out.println("=== 系统启动完成 ===");
-        System.out.println("访问地址: http://localhost:8080");
-        System.out.println("WebSocket地址: ws://localhost:8080/ws");
+        System.out.println("访问地址: http://10.72.83.45:8080");
+        System.out.println("WebSocket地址: ws://10.72.83.45:8080/ws");
     }
 } 

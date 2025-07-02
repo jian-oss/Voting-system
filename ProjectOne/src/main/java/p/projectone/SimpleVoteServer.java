@@ -57,7 +57,7 @@ public class SimpleVoteServer {
         server.start();
         
         System.out.println("=== 分布式投票系统服务器已启动 ===");
-        System.out.println("服务器地址: http://localhost:" + PORT);
+        System.out.println("服务器地址: http://10.72.83.45:" + PORT);
         System.out.println("API接口:");
         System.out.println("  POST /api/vote - 投票");
         System.out.println("  GET  /api/vote/results - 获取结果");
