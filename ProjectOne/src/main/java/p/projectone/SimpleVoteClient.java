@@ -33,8 +33,11 @@ public class SimpleVoteClient extends JFrame {
     private String[] candidateIds = {"1", "2", "3"};
     
     // Support multiple server nodes
-    // More nodes can be added, e.g. "http://192.168.1.101:8080"
-    // Load balancing mode: "roundrobin" or "random"
+    private static final String[] SERVER_NODES = {
+        "http://10.72.83.45:8080",
+        "http://10.72.83.45:8081"
+        // More nodes can be added, e.g. "http://192.168.1.101:8080"
+    };
     private static final String LOAD_BALANCE_MODE = "roundrobin"; // Can be changed to "random"
     private static final AtomicInteger nodeIndex = new AtomicInteger(0);
     private static final Random random = new Random();
