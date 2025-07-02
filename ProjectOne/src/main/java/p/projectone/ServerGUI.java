@@ -14,17 +14,17 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * 服务器端GUI界面
- * 连接到HTTP服务器并显示实时数据
+ * Server-side GUI interface
+ * Connects to HTTP server and displays real-time data
  * 
  * @author Distributed Systems Team
  */
 public class ServerGUI extends JFrame {
     
-    // 服务器地址
+    // Server address
     private static final String SERVER_URL = "http://10.72.83.45:8080";
     
-    // GUI组件
+    // GUI components
     private JTextArea logArea;
     private JTextArea statsArea;
     private JTextArea voteResultsArea;
@@ -33,11 +33,11 @@ public class ServerGUI extends JFrame {
     private JButton resetButton;
     private JLabel statusLabel;
     
-    // 候选人信息
+    // Candidate information
     private String[] candidates = {"Alice", "Bob", "Charlie"};
     private String[] candidateIds = {"1", "2", "3"};
     
-    // 自动刷新定时器
+    // Auto-refresh timer
     private Timer refreshTimer;
 
     public ServerGUI() {
@@ -47,19 +47,19 @@ public class ServerGUI extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // 创建顶部状态栏
+        // Create top status bar
         createStatusBar();
         
-        // 创建主面板
+        // Create main panel
         createMainPanel();
         
-        // 创建底部控制面板
+        // Create bottom control panel
         createControlPanel();
 
-        // 启动自动刷新
+        // Start auto-refresh
         startAutoRefresh();
         
-        // 添加初始日志
+        // Add initial log
         addLogMessage("Server Management Interface has started");
         addLogMessage("Connected to server: " + SERVER_URL);
         addLogMessage("System Status: Running");
@@ -70,7 +70,7 @@ public class ServerGUI extends JFrame {
     }
     
     /**
-     * 创建状态栏
+     * Create status bar
      */
     private void createStatusBar() {
         JPanel statusPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -84,15 +84,15 @@ public class ServerGUI extends JFrame {
     }
     
     /**
-     * 创建主面板
+     * Create main panel
      */
     private void createMainPanel() {
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         
-        // 左侧面板 - 日志和统计
+        // Left panel - log and statistics
         JPanel leftPanel = new JPanel(new BorderLayout());
         
-        // 日志区域
+        // Log area
         logArea = new JTextArea();
         logArea.setEditable(false);
         logArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
@@ -101,7 +101,7 @@ public class ServerGUI extends JFrame {
         logScrollPane.setPreferredSize(new Dimension(400, 300));
         leftPanel.add(logScrollPane, BorderLayout.CENTER);
         
-        // 统计区域
+        // Statistics area
         statsArea = new JTextArea();
         statsArea.setEditable(false);
         statsArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
@@ -110,7 +110,7 @@ public class ServerGUI extends JFrame {
         statsScrollPane.setPreferredSize(new Dimension(400, 150));
         leftPanel.add(statsScrollPane, BorderLayout.SOUTH);
         
-        // 右侧面板 - 投票结果
+        // Right panel - voting results
         voteResultsArea = new JTextArea();
         voteResultsArea.setEditable(false);
         voteResultsArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
@@ -125,7 +125,7 @@ public class ServerGUI extends JFrame {
     }
     
     /**
-     * 创建控制面板
+     * Create control panel
      */
     private void createControlPanel() {
         JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
@@ -135,7 +135,7 @@ public class ServerGUI extends JFrame {
         refreshButton = new JButton("Refresh Data");
         resetButton = new JButton("Reset Votes");
         
-        // 清空日志按钮
+        // Clear log button
         clearLogButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -144,7 +144,7 @@ public class ServerGUI extends JFrame {
             }
         });
         
-        // 刷新按钮
+        // Refresh button
         refreshButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -154,7 +154,7 @@ public class ServerGUI extends JFrame {
             }
         });
         
-        // 重置按钮
+        // Reset button
         resetButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -180,7 +180,7 @@ public class ServerGUI extends JFrame {
     }
     
     /**
-     * 启动自动刷新
+     * Start auto-refresh
      */
     private void startAutoRefresh() {
         refreshTimer = new Timer();
@@ -193,11 +193,11 @@ public class ServerGUI extends JFrame {
                     updateConnectionStatus();
                 });
             }
-        }, 1000, 2000); // 每2秒刷新一次
+        }, 1000, 2000); // Refresh every 2 seconds
     }
     
     /**
-     * 更新连接状态
+     * Update connection status
      */
     private void updateConnectionStatus() {
         try {
@@ -221,7 +221,7 @@ public class ServerGUI extends JFrame {
     }
     
     /**
-     * 更新统计信息
+     * Update statistics
      */
     private void updateStats() {
         try {
@@ -269,7 +269,7 @@ public class ServerGUI extends JFrame {
     }
     
     /**
-     * 更新投票结果
+     * Update voting results
      */
     private void updateVoteResults() {
         try {
@@ -307,7 +307,7 @@ public class ServerGUI extends JFrame {
                     resultsText.append("   Percentage: ").append(String.format("%.1f", percentage)).append("%\n");
                     resultsText.append("   Progress Bar: ");
                     
-                    // 绘制简单的进度条
+                    // Draw simple progress bar
                     int bars = (int) (percentage / 5);
                     for (int j = 0; j < 20; j++) {
                         if (j < bars) {
@@ -333,15 +333,15 @@ public class ServerGUI extends JFrame {
     }
     
     /**
-     * 重置投票数据
+     * Reset voting data
      */
     private void resetVoteData() {
         addLogMessage("Reset functionality requires server-side support");
-        // 这里可以添加重置API调用
+        // You can add reset API call here
     }
     
     /**
-     * 添加日志消息
+     * Add log message
      */
     public void addLogMessage(String message) {
         String timestamp = java.time.LocalTime.now().toString();
@@ -350,12 +350,12 @@ public class ServerGUI extends JFrame {
     }
     
     /**
-     * 简单解析JSON（实际项目中应该使用JSON库）
+     * Simple JSON parsing (should use a JSON library in real projects)
      */
     private Map<String, Integer> parseJsonResults(String json) {
         Map<String, Integer> results = new HashMap<>();
         try {
-            // 移除花括号
+            // Remove curly braces
             json = json.substring(1, json.length() - 1);
             String[] pairs = json.split(",");
             for (String pair : pairs) {
@@ -373,7 +373,7 @@ public class ServerGUI extends JFrame {
     }
     
     /**
-     * 停止定时器
+     * Stop timer
      */
     public void stopTimer() {
         if (refreshTimer != null) {
@@ -386,7 +386,7 @@ public class ServerGUI extends JFrame {
             ServerGUI serverGUI = new ServerGUI();
             serverGUI.setVisible(true);
             
-            // 添加窗口关闭事件
+            // Add window close event
             serverGUI.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override
                 public void windowClosing(java.awt.event.WindowEvent e) {

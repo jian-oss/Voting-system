@@ -15,8 +15,8 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 简化的投票客户端
- * 连接到服务器端API进行投票
+ * Simplified voting client
+ * Connects to the server API to vote
  * 
  * @author Distributed Systems Team
  */
@@ -28,22 +28,18 @@ public class SimpleVoteClient extends JFrame {
     private JTextArea resultArea;
     private JTextArea logArea;
 
-    // 候选人列表
+    // Candidate list
     private String[] candidates = {"Alice", "Bob", "Charlie"};
     private String[] candidateIds = {"1", "2", "3"};
     
-    // 支持多个服务器节点
-    private static final String[] SERVER_NODES = {
-        "http://10.72.83.45:8080",
-        "http://10.72.83.45:8081",
-        // 可以添加更多节点，如 "http://192.168.1.101:8080"
-    };
-    // 负载均衡模式："roundrobin" 或 "random"
-    private static final String LOAD_BALANCE_MODE = "roundrobin"; // 可改为"random"
+    // Support multiple server nodes
+    // More nodes can be added, e.g. "http://192.168.1.101:8080"
+    // Load balancing mode: "roundrobin" or "random"
+    private static final String LOAD_BALANCE_MODE = "roundrobin"; // Can be changed to "random"
     private static final AtomicInteger nodeIndex = new AtomicInteger(0);
     private static final Random random = new Random();
 
-    // 获取当前要用的服务器节点
+    // Get the current server node to use
     private String getServerUrl() {
         if (LOAD_BALANCE_MODE.equals("random")) {
             int idx = random.nextInt(SERVER_NODES.length);
@@ -145,7 +141,7 @@ public class SimpleVoteClient extends JFrame {
         logMessage("Demonstrating distributed algorithms: Locking, Synchronization, Scheduling, Replication");
     }
 
-    // 发送投票请求到服务器
+    // Send vote request to server
     private boolean sendVoteToServer(String userId, String candidateId, String candidateName) {
         try {
             String serverUrl = getServerUrl();
@@ -170,7 +166,7 @@ public class SimpleVoteClient extends JFrame {
             if (responseCode == 200) {
                 return true;
             } else {
-                // 读取错误信息
+                // Read error message
                 try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getErrorStream()))) {
                     StringBuilder response = new StringBuilder();
                     String line;
@@ -179,7 +175,7 @@ public class SimpleVoteClient extends JFrame {
                     }
                     logMessage("Error message: " + response.toString());
                 }
-                // 故障转移：尝试下一个节点
+                // Failover: try next node
                 for (int i = 0; i < SERVER_NODES.length - 1; i++) {
                     String nextUrl = getServerUrl();
                     if (!nextUrl.equals(serverUrl)) {
@@ -210,7 +206,7 @@ public class SimpleVoteClient extends JFrame {
         }
     }
 
-    // 从服务器获取投票结果
+    // Get voting results from server
     private void refreshResultsFromServer() {
         try {
             URL url = new URL(getServerUrl() + "/api/vote/results");
@@ -228,11 +224,11 @@ public class SimpleVoteClient extends JFrame {
                 }
                 br.close();
                 
-                // 解析JSON结果
+                // Parse JSON results
                 String jsonResponse = sb.toString();
                 logMessage("Fetched results: " + jsonResponse);
                 
-                // 简单解析JSON（实际项目中应该使用JSON库）
+                // Simple JSON parsing (should use a JSON library in real projects)
                 Map<String, Integer> results = parseJsonResults(jsonResponse);
                 
                 StringBuilder resultText = new StringBuilder();
@@ -244,7 +240,7 @@ public class SimpleVoteClient extends JFrame {
                     resultText.append(name).append(": ").append(count).append(" votes\n");
                 }
                 
-                // 获取统计信息
+                // Get statistics
                 getServerStats(resultText);
                 
                 resultArea.setText(resultText.toString());
@@ -260,7 +256,7 @@ public class SimpleVoteClient extends JFrame {
         }
     }
     
-    // 获取服务器统计信息
+    // Get server statistics
     private void getServerStats(StringBuilder resultText) {
         try {
             URL url = new URL(getServerUrl() + "/api/stats");
@@ -290,11 +286,11 @@ public class SimpleVoteClient extends JFrame {
         }
     }
     
-    // 简单解析JSON（实际项目中应该使用JSON库）
+    // Simple JSON parsing (should use a JSON library in real projects)
     private Map<String, Integer> parseJsonResults(String json) {
         Map<String, Integer> results = new HashMap<>();
         try {
-            // 移除花括号
+            // Remove curly braces
             json = json.substring(1, json.length() - 1);
             String[] pairs = json.split(",");
             for (String pair : pairs) {
@@ -311,7 +307,7 @@ public class SimpleVoteClient extends JFrame {
         return results;
     }
 
-    // 添加日志消息
+    // Add log message
     private void logMessage(String message) {
         String timestamp = java.time.LocalTime.now().toString();
         logArea.append("[" + timestamp + "] " + message + "\n");

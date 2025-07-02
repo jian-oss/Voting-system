@@ -13,9 +13,9 @@ import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * 简化的投票服务器
- * 实现分布式投票系统的服务器端功能
- * 展示分布式算法：锁定、同步、调度、复制
+ * Simplified voting server
+ * Implements the server-side functionality of a distributed voting system
+ * Demonstrates distributed algorithms: Locking, Synchronization, Scheduling, Replication
  * 
  * @author Distributed Systems Team
  */
@@ -26,54 +26,54 @@ public class SimpleVoteServer {
     private static final Map<String, String> userVotes = new ConcurrentHashMap<>();
     private static final Map<String, ReentrantLock> userLocks = new ConcurrentHashMap<>();
     
-    // 统计信息
+    // Statistics information
     private static final AtomicInteger totalRequests = new AtomicInteger(0);
     private static final AtomicInteger successfulVotes = new AtomicInteger(0);
     private static final AtomicInteger failedVotes = new AtomicInteger(0);
     
-    // 候选人信息
+    // Candidate information
     private static final String[] candidates = {"Alice", "Bob", "Charlie"};
     private static final String[] candidateIds = {"1", "2", "3"};
     
     public static void main(String[] args) throws IOException {
-        // 初始化投票数据
+        // Initialize voting data
         for (String id : candidateIds) {
             voteCounts.put(id, 0);
         }
         
-        // 创建HTTP服务器
+        // Create HTTP server
         HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
         
-        // 设置线程池（调度）
+        // Set thread pool (scheduling)
         server.setExecutor(Executors.newFixedThreadPool(10));
         
-        // 注册路由处理器
+        // Register route handlers
         server.createContext("/api/vote", new VoteHandler());
         server.createContext("/api/vote/results", new ResultsHandler());
         server.createContext("/api/stats", new StatsHandler());
         server.createContext("/", new HomeHandler());
         
-        // 启动服务器
+        // Start server
         server.start();
         
-        System.out.println("=== 分布式投票系统服务器已启动 ===");
-        System.out.println("服务器地址: http://10.72.83.45:" + PORT);
-        System.out.println("API接口:");
-        System.out.println("  POST /api/vote - 投票");
-        System.out.println("  GET  /api/vote/results - 获取结果");
-        System.out.println("  GET  /api/stats - 获取统计");
+        System.out.println("=== Distributed Voting System Server Started ===");
+        System.out.println("Server Address: http://10.72.83.45:" + PORT);
+        System.out.println("API Endpoints:");
+        System.out.println("  POST /api/vote - Vote");
+        System.out.println("  GET  /api/vote/results - Get Results");
+        System.out.println("  GET  /api/stats - Get Statistics");
         System.out.println("=====================================");
-        System.out.println("演示分布式算法:");
-        System.out.println("1. 锁定 (Locking) - 防止重复投票");
-        System.out.println("2. 同步 (Synchronization) - 并发控制");
-        System.out.println("3. 调度 (Scheduling) - 线程池处理");
-        System.out.println("4. 复制 (Replication) - 数据一致性");
+        System.out.println("Demonstrating Distributed Algorithms:");
+        System.out.println("1. Locking - Prevent duplicate voting");
+        System.out.println("2. Synchronization - Concurrency control");
+        System.out.println("3. Scheduling - Thread pool processing");
+        System.out.println("4. Replication - Data consistency");
         System.out.println("=====================================");
     }
     
     /**
-     * 投票处理器
-     * 实现分布式锁和并发控制
+     * Vote handler
+     * Implements distributed lock and concurrency control
      */
     static class VoteHandler implements HttpHandler {
         @Override
@@ -86,11 +86,11 @@ public class SimpleVoteServer {
             }
             
             try {
-                // 读取请求数据
+                // Read request data
                 String requestBody = new String(exchange.getRequestBody().readAllBytes());
-                System.out.println("收到投票请求: " + requestBody);
+                System.out.println("Received vote request: " + requestBody);
                 
-                // 解析请求参数（简化版）
+                // Parse request parameters (simplified)
                 String userId = extractUserId(requestBody);
                 String candidateId = extractCandidateId(requestBody);
                 String candidateName = extractCandidateName(requestBody);
@@ -101,39 +101,39 @@ public class SimpleVoteServer {
                     return;
                 }
                 
-                // 分布式锁实现
+                // Distributed lock implementation
                 ReentrantLock userLock = userLocks.computeIfAbsent(userId, k -> new ReentrantLock());
                 
                 boolean voteSuccess = false;
                 if (userLock.tryLock()) {
                     try {
-                        System.out.println("获取分布式锁成功 - 用户: " + userId);
+                        System.out.println("Acquired distributed lock - User: " + userId);
                         
-                        // 检查是否已投票
+                        // Check if already voted
                         if (userVotes.containsKey(userId)) {
-                            System.out.println("用户已投票 - 用户: " + userId);
+                            System.out.println("User has already voted - User: " + userId);
                             sendResponse(exchange, 400, "User already voted");
                             failedVotes.incrementAndGet();
                             return;
                         }
                         
-                        // 模拟处理延迟
+                        // Simulate processing delay
                         Thread.sleep(500);
                         
-                        // 记录投票
+                        // Record vote
                         userVotes.put(userId, candidateId);
                         voteCounts.put(candidateId, voteCounts.get(candidateId) + 1);
                         
-                        System.out.println("投票成功 - 用户: " + userId + " 投给 " + candidateName);
+                        System.out.println("Vote successful - User: " + userId + " voted for " + candidateName);
                         successfulVotes.incrementAndGet();
                         voteSuccess = true;
                         
                     } finally {
                         userLock.unlock();
-                        System.out.println("释放分布式锁 - 用户: " + userId);
+                        System.out.println("Released distributed lock - User: " + userId);
                     }
                 } else {
-                    System.out.println("获取分布式锁失败 - 用户: " + userId + " 正在处理中");
+                    System.out.println("Failed to acquire distributed lock - User: " + userId + " is being processed");
                     sendResponse(exchange, 429, "User is being processed");
                     failedVotes.incrementAndGet();
                     return;
@@ -144,7 +144,7 @@ public class SimpleVoteServer {
                 }
                 
             } catch (Exception e) {
-                System.err.println("处理投票请求时发生错误: " + e.getMessage());
+                System.err.println("Error occurred while processing vote request: " + e.getMessage());
                 sendResponse(exchange, 500, "Internal server error");
                 failedVotes.incrementAndGet();
             }
@@ -152,7 +152,7 @@ public class SimpleVoteServer {
     }
     
     /**
-     * 结果查询处理器
+     * Results query handler
      */
     static class ResultsHandler implements HttpHandler {
         @Override
@@ -162,7 +162,7 @@ public class SimpleVoteServer {
                 return;
             }
             
-            // 构建JSON响应
+            // Build JSON response
             StringBuilder json = new StringBuilder("{");
             for (int i = 0; i < candidateIds.length; i++) {
                 if (i > 0) json.append(",");
@@ -177,7 +177,7 @@ public class SimpleVoteServer {
     }
     
     /**
-     * 统计信息处理器
+     * Statistics handler
      */
     static class StatsHandler implements HttpHandler {
         @Override
@@ -201,19 +201,19 @@ public class SimpleVoteServer {
     }
     
     /**
-     * 首页处理器
+     * Home page handler
      */
     static class HomeHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             String html = "<html><body>" +
-                "<h1>分布式投票系统服务器</h1>" +
-                "<p>服务器运行正常</p>" +
-                "<p>API接口:</p>" +
+                "<h1>Distributed Voting System Server</h1>" +
+                "<p>Server is running normally</p>" +
+                "<p>API Endpoints:</p>" +
                 "<ul>" +
-                "<li>POST /api/vote - 投票</li>" +
-                "<li>GET /api/vote/results - 获取结果</li>" +
-                "<li>GET /api/stats - 获取统计</li>" +
+                "<li>POST /api/vote - Vote</li>" +
+                "<li>GET /api/vote/results - Get Results</li>" +
+                "<li>GET /api/stats - Get Statistics</li>" +
                 "</ul>" +
                 "</body></html>";
             
@@ -223,7 +223,7 @@ public class SimpleVoteServer {
     }
     
     /**
-     * 发送HTTP响应
+     * Send HTTP response
      */
     private static void sendResponse(HttpExchange exchange, int code, String response) throws IOException {
         exchange.sendResponseHeaders(code, response.getBytes().length);
@@ -233,7 +233,7 @@ public class SimpleVoteServer {
     }
     
     /**
-     * 从请求体中提取用户ID（简化实现）
+     * Extract user ID from request body (simplified)
      */
     private static String extractUserId(String requestBody) {
         if (requestBody.contains("\"userId\":")) {
@@ -247,7 +247,7 @@ public class SimpleVoteServer {
     }
     
     /**
-     * 从请求体中提取候选人ID（简化实现）
+     * Extract candidate ID from request body (simplified)
      */
     private static String extractCandidateId(String requestBody) {
         if (requestBody.contains("\"candidateId\":")) {
@@ -261,7 +261,7 @@ public class SimpleVoteServer {
     }
     
     /**
-     * 从请求体中提取候选人姓名（简化实现）
+     * Extract candidate name from request body (simplified)
      */
     private static String extractCandidateName(String requestBody) {
         if (requestBody.contains("\"candidateName\":")) {

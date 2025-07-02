@@ -8,22 +8,22 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class VoteStressTest {
-    // 支持多个服务器节点
+    // Support multiple server nodes
     private static final String[] SERVER_NODES = {
         "http://10.72.83.45:8080",
         "http://10.72.83.45:8081"
-        // 可添加更多节点
+        // More nodes can be added
     };
     private static final String[] CANDIDATES = {"1", "2", "3"};
-    private static final int USER_COUNT = 100; // 并发用户数
+    private static final int USER_COUNT = 100; // Number of concurrent users
     private static final int THREAD_POOL_SIZE = 20;
     private static final Random random = new Random();
     private static final AtomicInteger successCount = new AtomicInteger(0);
     private static final AtomicInteger failCount = new AtomicInteger(0);
 
     public static void main(String[] args) throws Exception {
-        System.out.println("=== 分布式投票系统压力测试 ===");
-        System.out.println("模拟 " + USER_COUNT + " 个用户并发投票...");
+        System.out.println("=== Distributed Voting System Stress Test ===");
+        System.out.println("Simulating concurrent voting for " + USER_COUNT + " users...");
         CountDownLatch latch = new CountDownLatch(USER_COUNT);
         long start = System.currentTimeMillis();
 
@@ -46,11 +46,11 @@ public class VoteStressTest {
 
         latch.await();
         long end = System.currentTimeMillis();
-        System.out.println("=== 测试完成 ===");
-        System.out.println("成功投票: " + successCount.get());
-        System.out.println("失败投票: " + failCount.get());
-        System.out.println("总耗时: " + (end - start) + " ms");
-        System.out.println("成功率: " + (successCount.get() * 100.0 / USER_COUNT) + "%");
+        System.out.println("=== Test Completed ===");
+        System.out.println("Successful votes: " + successCount.get());
+        System.out.println("Failed votes: " + failCount.get());
+        System.out.println("Total time: " + (end - start) + " ms");
+        System.out.println("Success rate: " + (successCount.get() * 100.0 / USER_COUNT) + "%");
     }
 
     private static boolean sendVote(String serverUrl, String userId, String candidateId, String candidateName) {
