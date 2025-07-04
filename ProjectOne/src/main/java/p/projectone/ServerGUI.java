@@ -22,7 +22,7 @@ import java.util.TimerTask;
 public class ServerGUI extends JFrame {
     
     // Server address
-    private static final String SERVER_URL = "http://10.72.83.45:8080";
+    private static final String SERVER_URL = "http://10.72.214.22:8080";
     
     // GUI components
     private JTextArea logArea;

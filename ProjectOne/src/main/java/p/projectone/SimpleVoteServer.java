@@ -57,7 +57,7 @@ public class SimpleVoteServer {
         server.start();
         
         System.out.println("=== Distributed Voting System Server Started ===");
-        System.out.println("Server Address: http://10.72.83.45:" + PORT);
+        System.out.println("Server Address: http://10.72.214.22:" + PORT);
         System.out.println("API Endpoints:");
         System.out.println("  POST /api/vote - Vote");
         System.out.println("  GET  /api/vote/results - Get Results");

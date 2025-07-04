@@ -29,7 +29,7 @@ public class DistributedVotingSystemApplication {
         SpringApplication.run(DistributedVotingSystemApplication.class, args);
         
         System.out.println("=== System Startup Complete ===");
-        System.out.println("Access URL: http://10.72.83.45:8080");
-        System.out.println("WebSocket URL: ws://10.72.83.45:8080/ws");
+        System.out.println("Access URL: http://10.72.214.22:8080");
+        System.out.println("WebSocket URL: ws://10.72.214.22:8080/ws");
     }
 } 

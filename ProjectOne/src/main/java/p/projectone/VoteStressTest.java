@@ -10,8 +10,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class VoteStressTest {
     // Support multiple server nodes
     private static final String[] SERVER_NODES = {
-        "http://10.72.83.45:8080",
-        "http://10.72.83.45:8081"
+        "http://10.72.214.22:8080",
+        "http://10.72.214.22:8081"
         // More nodes can be added
     };
     private static final String[] CANDIDATES = {"1", "2", "3"};
